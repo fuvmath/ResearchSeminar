@@ -1,20 +1,25 @@
 % Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
-%
 \documentclass[
   openany]{book}
-\usepackage{lmodern}
-\usepackage{amssymb,amsmath}
-\usepackage{ifxetex,ifluatex}
-\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{5}
+\usepackage{iftex}
+\ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
 \else % if luatex or xetex
-  \usepackage{unicode-math}
+  \usepackage{unicode-math} % this also loads fontspec
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -32,16 +37,8 @@
 }{% if KOMA class
   \KOMAoptions{parskip=half}}
 \makeatother
-\usepackage{xcolor}
-\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
-\hypersetup{
-  pdftitle={MATH 311: Mathematics Research Seminar - Spring 2025},
-  hidelinks,
-  pdfcreator={LaTeX via pandoc}}
-\urlstyle{same} % disable monospaced font for URLs
-\usepackage[margin=1in]{geometry}
-\usepackage{longtable,booktabs}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
 \makeatletter
@@ -52,23 +49,31 @@
 \makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
-\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
-\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
-\makeatother
-% Scale images if necessary, so that they will not overflow the page
-% margins by default, and it is still possible to overwrite the defaults
-% using explicit options in \includegraphics[width, height, ...]{}
-\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
 % Set default figure placement to htbp
-\makeatletter
 \def\fps@figure{htbp}
 \makeatother
 \setlength{\emergencystretch}{3em} % prevent overfull lines
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-\setcounter{secnumdepth}{5}
 \usepackage[]{natbib}
 \bibliographystyle{plainnat}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={MATH 311: Mathematics Research Seminar - Spring 2025},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
 
 \title{MATH 311: Mathematics Research Seminar - Spring 2025}
 \author{}
@@ -77,12 +82,10 @@
 \begin{document}
 \maketitle
 
-\hypertarget{syllabus}{%
-\chapter*{Syllabus}\label{syllabus}}
+\chapter*{Syllabus}\label{syllabus}
 \addcontentsline{toc}{chapter}{Syllabus}
 
-\hypertarget{key-information}{%
-\subsection*{Key information}\label{key-information}}
+\subsection*{Key information}\label{key-information}
 \addcontentsline{toc}{subsection}{Key information}
 
 \begin{itemize}
@@ -111,8 +114,7 @@
   Prerequisites: at least one 300-level course
 \end{itemize}
 
-\hypertarget{course-description}{%
-\subsection*{Course description}\label{course-description}}
+\subsection*{Course description}\label{course-description}
 \addcontentsline{toc}{subsection}{Course description}
 
 This is a research seminar aimed at students who wish to major in mathematics.
@@ -126,23 +128,31 @@ The goal of this part is to help students learn how to synthesize and convey ide
 of other peoples' work. Along the way, students will learn how to apply learned
 mathematical concepts to understand complex research topics.
 
-\hypertarget{schedule}{%
-\subsection*{Schedule}\label{schedule}}
+\subsection*{Schedule}\label{schedule}
 \addcontentsline{toc}{subsection}{Schedule}
 
-\begin{longtable}[]{@{}ccc@{}}
-\toprule
-Date & Topic & Presenter\tabularnewline
-\midrule
+\begin{longtable}[]{@{}
+  >{\centering\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.0933}}
+  >{\centering\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.6400}}
+  >{\centering\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2667}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\centering
+Date
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Topic
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Presenter
+\end{minipage} \\
+\midrule\noalign{}
 \endhead
-01/10 & Introduction to research & All faculty\tabularnewline
-01/10 & Dr.~Tan Le's research & Dr.~Tan Le\tabularnewline
-01/10 & Dr.~Hieu Nguyen's research & Dr.~Hieu Nguyen\tabularnewline
-\bottomrule
+\bottomrule\noalign{}
+\endlastfoot
+01/10 & Introduction to research & All faculty \\
+01/10 & Dr.~Tan Le's research & Dr.~Tan Le \\
+01/10 & Dr.~Hieu Nguyen's research & Dr.~Hieu Nguyen \\
 \end{longtable}
 
-\hypertarget{assessment}{%
-\section*{Assessment}\label{assessment}}
+\section*{Assessment}\label{assessment}
 \addcontentsline{toc}{section}{Assessment}
 
 During the course, students are expected to compute their own percentage
@@ -150,49 +160,49 @@ points based on the following scheme.
 The instructor is not responsible for providing the running percentage.
 
 \begin{longtable}[]{@{}cc@{}}
-\toprule
-\textbf{Form of assessment} & \textbf{Weight}\tabularnewline
-\midrule
+\toprule\noalign{}
+\textbf{Form of assessment} & \textbf{Weight} \\
+\midrule\noalign{}
 \endhead
-Participation & 30\%\tabularnewline
-Report & 30\%\tabularnewline
-First presentation & 15\%\tabularnewline
-Second presentation & 20\%\tabularnewline
-\bottomrule
+\bottomrule\noalign{}
+\endlastfoot
+Participation & 30\% \\
+Report & 30\% \\
+First presentation & 15\% \\
+Second presentation & 20\% \\
 \end{longtable}
 
 The following is the letter grade breakdown. It is based on
 common practice in the United States.
 
 \begin{longtable}[]{@{}cc@{}}
-\toprule
-\textbf{Letter Grade} & \textbf{Percentage}\tabularnewline
-\midrule
+\toprule\noalign{}
+\textbf{Letter Grade} & \textbf{Percentage} \\
+\midrule\noalign{}
 \endhead
-A & {[}93,100{]}\tabularnewline
-A- & {[}90,93)\tabularnewline
-B+ & {[}87,90)\tabularnewline
-B & {[}83,87)\tabularnewline
-B- & {[}80, 83)\tabularnewline
-C+ & {[}77,80)\tabularnewline
-C & {[}73,77)\tabularnewline
-C- & {[}70,73)\tabularnewline
-D+ & {[}67,70)\tabularnewline
-D & {[}60, 66)\tabularnewline
-F & {[}0,60)\tabularnewline
-\bottomrule
+\bottomrule\noalign{}
+\endlastfoot
+A & {[}93,100{]} \\
+A- & {[}90,93) \\
+B+ & {[}87,90) \\
+B & {[}83,87) \\
+B- & {[}80, 83) \\
+C+ & {[}77,80) \\
+C & {[}73,77) \\
+C- & {[}70,73) \\
+D+ & {[}67,70) \\
+D & {[}60, 66) \\
+F & {[}0,60) \\
 \end{longtable}
 
-\hypertarget{time-expectations}{%
-\section*{Time expectations}\label{time-expectations}}
+\section*{Time expectations}\label{time-expectations}
 \addcontentsline{toc}{section}{Time expectations}
 
 Some materials require time to be accustomed to. Some students are quicker than
 others. However, on average, you should expect 10-15 hours per week (including class time)
 on the materials in order to know the subject relatively well.
 
-\hypertarget{collaboration-plagiarism}{%
-\subsection*{Collaboration \& Plagiarism}\label{collaboration-plagiarism}}
+\subsection*{Collaboration \& Plagiarism}\label{collaboration-plagiarism}
 \addcontentsline{toc}{subsection}{Collaboration \& Plagiarism}
 
 Plagiarism is the act of submitting the intellectual property of another person as your own. It is one of the most serious of academic offenses. Acts of plagiarism include, but are not limited to:
@@ -208,8 +218,7 @@ Plagiarism is the act of submitting the intellectual property of another person 
 
 Further details can be found in the Code of Academic Integrity {[}\href{https://fulbright.edu.vn/articles/Code\%20of\%20Academic\%20Integrity/Code\%20of\%20Academic\%20Integrity_\%20Excom\%20Endorsed.pdf}{link}{]}.
 
-\hypertarget{learning-support}{%
-\section*{Learning Support}\label{learning-support}}
+\section*{Learning Support}\label{learning-support}
 \addcontentsline{toc}{section}{Learning Support}
 
 In addition to your course instructors, there are other resources available to support your
@@ -218,8 +227,7 @@ supplementary workshops, and both individual and group tutoring and mentoring in
 content, language learning, and academic skills. If you would like to request learning support,
 please contact Fulbright Learning Support (\url{https://learning-support.notion.site}).
 
-\hypertarget{wellbeing}{%
-\section*{Wellbeing}\label{wellbeing}}
+\section*{Wellbeing}\label{wellbeing}
 \addcontentsline{toc}{section}{Wellbeing}
 
 Mental health and wellbeing are essential for the success of your academic journey. The
